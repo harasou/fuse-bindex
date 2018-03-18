@@ -1,0 +1,11 @@
+language: c
+sudo: false
+compiler:
+  - gcc
+  - clang
+install:
+  - sudo apt-get -qq update
+  - sudo apt-get -qq install libfuse-dev
+script:
+  - make CC=$CC
+  - make check
