@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: check clean criterion
 
 CC       := gcc
 CFLAGS   := -g -MMD -MP -Wall
@@ -12,12 +12,19 @@ BINDEXO  := ../obj/bindex.o
 
 TARGET   := ./$(BINARY)
 SOURCES  := $(wildcard *.c)
+CRITERION := /usr/lib/libcriterion.so
 
-$(TARGET): $(SOURCES) $(BINDEXO)
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(CPPFLAGS)
+check: $(TARGET)
+	$(TARGET)
+
+$(TARGET): $(SOURCES) $(BINDEXO) $(CRITERION)
+	$(CC) -o $@ $(SOURCES) $(BINDEXO) $(CFLAGS) $(LDFLAGS) $(CPPFLAGS)
 
 $(BINDEXO):
 	make -C .. obj/bindex.o
+
+$(CRITERION):
+	./setup-criterion
 
 clean:
 	-rm -rf $(TARGET)
