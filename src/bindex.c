@@ -14,7 +14,8 @@
 #include <unistd.h>
 
 /* Bind directory */
-static struct {
+static struct
+{
 	char *dpath;
 	size_t dpath_len;
 } src;
@@ -57,15 +58,10 @@ int bindex_init(char *dpath)
 		return -1;
 	}
 
-	src.dpath     = dpath;
+	src.dpath = dpath;
 	src.dpath_len = strlen(dpath);
 
 	return 0;
-}
-
-int bindex_getattr(const char *path, struct stat *stbuf)
-{
-	DO_SYSCALL2(lstat, path, stbuf);
 }
 
 int bindex_readlink(const char *path, char *buf, size_t size)
@@ -144,9 +140,9 @@ int bindex_utime(const char *path, struct utimbuf *buf)
 int mkonetimefd(void)
 {
 	int fd, n;
-	char template[]		    = "/tmp/bindex.XXXXXX";
-	char tempfd[32]		    = {0};
-	char temppath[PATH_MAX + 1] = {0};
+	char template[] = "/tmp/bindex.XXXXXX";
+	char tempfd[32] = { 0 };
+	char temppath[PATH_MAX + 1] = { 0 };
 
 	if ((fd = mkstemp(template)) == -1) {
 		return -1;
@@ -171,7 +167,7 @@ int bindex_open(const char *path, struct fuse_file_info *fi)
 	char *argv[2];
 
 	CONVERT_REALPATH(path, real_path);
-	if (stat(real_path, &buf) < 0) {
+	if (lstat(real_path, &buf) < 0) {
 		return -errno;
 	}
 	if (buf.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
@@ -207,6 +203,32 @@ int bindex_open(const char *path, struct fuse_file_info *fi)
 		}
 		fi->fh = fd;
 	}
+	return 0;
+}
+
+int bindex_getattr(const char *path, struct stat *stbuf) {
+
+	struct fuse_file_info fi;
+	struct stat buf;
+
+	CONVERT_REALPATH(path, real_path);
+	if (lstat(real_path, stbuf) < 0) {
+		return -errno;
+	}
+
+	if (S_ISREG(stbuf->st_mode) && stbuf->st_mode & ((S_IXUSR | S_IXGRP | S_IXOTH))){
+		if (bindex_open(path, &fi) < 0) {
+			return -errno;
+		}
+		if (fstat(fi.fh, &buf) < 0) {
+			return -errno;
+		}
+		if (close(fi.fh) < 0 ) {
+			return -errno;
+		}
+		stbuf->st_size = buf.st_size;
+	}
+
 	return 0;
 }
 
