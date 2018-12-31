@@ -1,7 +1,7 @@
 .PHONY: all clean check install
 
 CC       := gcc
-CFLAGS   := -g -MMD -MP -Wall
+CFLAGS   := -g -MMD -MP -Wall -fPIC
 LDFLAGS  :=
 CPPFLAGS := -I./include
 
