@@ -5,7 +5,7 @@ compiler:
   - clang
 install:
   - sudo apt-get -qq update
-  - sudo apt-get -qq install libfuse-dev
+  - sudo apt-get -qq install libfuse-dev curl
 script:
   - make CC=$CC
   - make check
