@@ -51,6 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-bin/bindex
 .vagrant
-
+bin/bindex
+test/bindex-test
