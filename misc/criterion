@@ -5,16 +5,16 @@ ARCHIVE="criterion-$VERSION-linux-x86_64.tar.bz2"
 DOWNPATH="https://github.com/Snaipe/Criterion/releases/download/$VERSION/$ARCHIVE"
 
 uninstall(){
-    find /usr | grep -i criterion | sort -r | xargs sudo rm -vrf
+    find /usr | grep -i criterion | sort -r | xargs rm -vrf
 }
 
 install(){
     pushd /tmp
     curl -OL $DOWNPATH
     tar jxf $ARCHIVE
-    sudo chown -R root: criterion-$VERSION
-    sudo cp    -Rpv     criterion-$VERSION/* /usr
-    sudo rm    -rv      criterion-$VERSION*
+    chown -R root: criterion-$VERSION
+    cp    -Rpv     criterion-$VERSION/* /usr
+    rm    -rv      criterion-$VERSION*
     popd
 }
 
