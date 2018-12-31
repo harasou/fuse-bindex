@@ -1,0 +1,8 @@
+#/bin/bash
+
+BASEDIR="$(cd $(dirname $0)/..;pwd)"
+
+source $BASEDIR/misc/provision
+
+make -C $BASEDIR OSID=$ID${VERSION_ID/.} all
+

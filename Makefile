@@ -9,7 +9,7 @@ CFLAGS   += $(shell pkg-config fuse --cflags)
 LDFLAGS  += $(shell pkg-config fuse --libs)
 BINARY   := bindex
 
-TARGET   := ./bin/$(BINARY)
+TARGET   := ./bin/$(OSID)/$(BINARY)
 SRCDIR   := ./src
 OBJDIR   := ./obj
 SOURCES  := $(wildcard $(SRCDIR)/*.c)
@@ -17,6 +17,7 @@ OBJECTS  := $(addprefix $(OBJDIR)/, $(notdir $(SOURCES:.c=.o)))
 DEPENDS  := $(OBJECTS:.o=.d)
 
 $(TARGET): $(OBJECTS)
+	-mkdir -p `dirname $(TARGET)`
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
@@ -32,6 +33,6 @@ check:
 	make --no-print-directory -C test
 
 install: $(TARGET)
-	mv -v $(TARGET) /usr/bin/
+	mv -v $(TARGET) /usr/local/bin/
 
 -include $(DEPENDS)
