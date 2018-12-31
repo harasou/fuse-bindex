@@ -24,7 +24,7 @@ $(BINDEXO):
 	make -C .. obj/bindex.o
 
 $(CRITERION):
-	./setup-criterion
+	../misc/criterion
 
 clean:
 	-rm -rf $(TARGET)

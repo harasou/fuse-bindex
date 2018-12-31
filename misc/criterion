@@ -9,6 +9,7 @@ uninstall(){
 }
 
 install(){
+    which -s curl || apt-get install -y curl
     pushd /tmp
     curl -OL $DOWNPATH
     tar jxf $ARCHIVE
