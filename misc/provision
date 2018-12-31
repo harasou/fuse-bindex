@@ -1,0 +1,13 @@
+#!/bin/bash
+
+source /etc/os-release 2>/dev/nuul || { ID=centos; VERSION_ID=6; }
+
+case $ID in
+centos)
+    yum install -y fuse fuse-devel gcc make
+    ;;
+ubuntu)
+    apt update && \
+    apt install -y pkg-config libfuse-dev make
+    ;;
+esac
