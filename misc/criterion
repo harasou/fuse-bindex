@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -xve
 
 VERSION="v2.3.2"
 ARCHIVE="criterion-$VERSION-linux-x86_64.tar.bz2"

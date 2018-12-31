@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash -xve
 
 BASEDIR="$(cd $(dirname $0)/..;pwd)"
 

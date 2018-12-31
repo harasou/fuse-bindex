@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/bash -xve
 
-source /etc/os-release 2>/dev/nuul || { ID=centos; VERSION_ID=6; }
+source /etc/os-release 2>/dev/null || { ID=centos; VERSION_ID=6; }
 
 case $ID in
 centos)
