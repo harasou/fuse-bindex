@@ -136,6 +136,12 @@ int bindex_utime(const char *path, struct utimbuf *buf)
 	DO_SYSCALL2(utime, path, buf);
 }
 
+int need_execution(struct stat *buf)
+{
+	return S_ISREG(buf->st_mode) &&
+	       buf->st_mode & ((S_IXUSR | S_IXGRP | S_IXOTH));
+}
+
 int mkonetimefd(void)
 {
 	int fd, n;
@@ -169,7 +175,7 @@ int bindex_open(const char *path, struct fuse_file_info *fi)
 	if (lstat(real_path, &buf) < 0) {
 		return -errno;
 	}
-	if (buf.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
+	if (need_execution(&buf)) {
 
 		if ((fd = mkonetimefd()) == -1) {
 			return -errno;
@@ -216,8 +222,7 @@ int bindex_getattr(const char *path, struct stat *stbuf)
 		return -errno;
 	}
 
-	if (S_ISREG(stbuf->st_mode) &&
-	    stbuf->st_mode & ((S_IXUSR | S_IXGRP | S_IXOTH))) {
+	if (need_execution(stbuf)) {
 		if (bindex_open(path, &fi) < 0) {
 			return -errno;
 		}
