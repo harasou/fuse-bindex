@@ -233,6 +233,7 @@ int bindex_getattr(const char *path, struct stat *stbuf)
 			return -errno;
 		}
 		stbuf->st_size = buf.st_size;
+		stbuf->st_mode &= ~(S_IWUSR | S_IWGRP | S_IWOTH);
 	}
 
 	return 0;
