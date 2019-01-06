@@ -11,13 +11,12 @@ int main(int argc, char *argv[])
 	char *binddir;
 
 	if (argc < 3) {
-		fprintf(
-		    stderr,
-		    "Usage: bindex [fuse options] <bind root> <mountpoint>\n");
+		fprintf(stderr,
+			"Usage: bindex bindroot mountpoint [fuse options]\n");
 		return -1;
 	}
 
-	binddir = realpath(argv[argc - 2], NULL);
+	binddir = realpath(argv[1], NULL);
 	ret     = bindex_init(binddir);
 	if (ret != 0) {
 		fprintf(stderr, "`%s' is not a directory\n", binddir);
@@ -25,8 +24,8 @@ int main(int argc, char *argv[])
 	}
 
 	/* Truncate arguments for fuse_main */
-	argv[argc - 2] = argv[argc - 1];
-	argv[argc - 1] = NULL;
+	argv[1] = argv[0];
+	argv++;
 	argc--;
 
 	return fuse_main(argc, argv, &bindex_oper, NULL);
