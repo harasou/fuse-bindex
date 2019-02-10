@@ -145,7 +145,7 @@ int should_execute(struct stat *buf)
 int mkonetimefd(void)
 {
 	int fd, n;
-	char template[]		    = "/tmp/bindex.XXXXXX";
+	char template[]		    = "/tmp/.bindex.XXXXXX";
 	char tempfd[32]		    = {0};
 	char temppath[PATH_MAX + 1] = {0};
 
