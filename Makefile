@@ -7,7 +7,7 @@ CPPFLAGS := -I./include
 
 CFLAGS   += $(shell pkg-config fuse --cflags)
 LDFLAGS  += $(shell pkg-config fuse --libs)
-BINARY   := bindex
+BINARY   := bindexd
 
 TARGET   := ./bin/$(OSID)/$(BINARY)
 SRCDIR   := ./src

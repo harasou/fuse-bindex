@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
 	if (argc < 3) {
 		fprintf(stderr,
-			"Usage: bindex bindroot mountpoint [fuse options]\n");
+			"Usage: bindexd bindroot mountpoint [fuse options]\n");
 		return -1;
 	}
 
