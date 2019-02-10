@@ -10,7 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/syscall.h>
 #include <sys/wait.h>
+#include <syslog.h>
 #include <unistd.h>
 
 /* Bind directory */
@@ -47,7 +49,6 @@ static struct {
 
 int bindex_init(char *dpath)
 {
-
 	struct stat buf;
 
 	if (stat(dpath, &buf) < 0) {
@@ -59,6 +60,10 @@ int bindex_init(char *dpath)
 
 	src.dpath     = dpath;
 	src.dpath_len = strlen(dpath);
+
+	openlog(NULL, LOG_PID, LOG_DAEMON);
+	syslog(LOG_INFO, "Starting Fuse-BindEx Daemon. Binding %s ...",
+	       src.dpath);
 
 	return 0;
 }
@@ -161,6 +166,10 @@ int mkonetimefd(void)
 		return -1;
 	}
 
+	syslog(LOG_INFO,
+	       "[%ld]: Create outputfile for open(). File:[fd=%d path=\"%s\"]",
+	       syscall(SYS_gettid), fd, temppath);
+
 	return fd;
 }
 
@@ -175,7 +184,15 @@ int bindex_open(const char *path, struct fuse_file_info *fi)
 	if (lstat(real_path, &buf) < 0) {
 		return -errno;
 	}
+
 	if (should_execute(&buf)) {
+
+		struct fuse_context *fc = fuse_get_context();
+		syslog(
+		    LOG_INFO,
+		    "[%ld]: System call open() requiring execution was called. "
+		    "Caller:[uid=%d gid=%d pid=%d] Exec:[path=\"%s\"]",
+		    syscall(SYS_gettid), fc->uid, fc->gid, fc->pid, real_path);
 
 		if ((fd = mkonetimefd()) == -1) {
 			return -errno;
@@ -232,6 +249,7 @@ int bindex_getattr(const char *path, struct stat *stbuf)
 		if (close(fi.fh) < 0) {
 			return -errno;
 		}
+
 		stbuf->st_size = buf.st_size;
 		stbuf->st_mode &= ~(S_IWUSR | S_IWGRP | S_IWOTH);
 	}
